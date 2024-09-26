@@ -30,10 +30,21 @@ const GET_QUESTIONS = async (req, res) => {
   try {
     const response = await QuestionModel.find();
 
-    return res.status(200).json({ question: response });
+    return res.status(200).json({ questions: response });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Error in application" });
+  }
+};
+
+const GET_QUESTION_BY_ID = async (req, res) => {
+  try {
+    const response = await QuestionModel.findOne({ id: req.params.id });
+
+    return res.status(200).json({ question: response });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "error in application" });
   }
 };
 
@@ -46,7 +57,7 @@ const DELETE_QUESTION_BY_ID = async (req, res) => {
     if (response.userId !== req.body.userId) {
       return res
         .status(403)
-        .json({ message: "Yuo can only delete packages what belongs to You" });
+        .json({ message: "Yuo can only delete question what belongs to You" });
     }
 
     if (!response) {
@@ -62,4 +73,9 @@ const DELETE_QUESTION_BY_ID = async (req, res) => {
   }
 };
 
-export { CREATE_QUESTION, GET_QUESTIONS, DELETE_QUESTION_BY_ID };
+export {
+  CREATE_QUESTION,
+  GET_QUESTIONS,
+  GET_QUESTION_BY_ID,
+  DELETE_QUESTION_BY_ID,
+};

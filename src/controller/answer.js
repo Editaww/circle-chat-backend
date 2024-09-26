@@ -39,6 +39,50 @@ const GET_ANSWER = async (req, res) => {
   }
 };
 
+const LIKE_ANSWER = async (req, res) => {
+  try {
+    const { answerId } = req.body;
+
+    const answer = await AnswerModel.findOne({ id: answerId });
+
+    if (!answer) {
+      return res.status(404).json({ message: "Answer not found" });
+    }
+
+    answer.gainedLikesNumber += 1;
+    await answer.save();
+
+    return res.status(200).json({ message: "Answer liked", answer });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(500)
+      .json({ message: "Error occurred while liking the answer" });
+  }
+};
+
+const DISLIKE_ANSWER = async (req, res) => {
+  try {
+    const { answerId } = req.body;
+
+    const answer = await AnswerModel.findOne({ id: answerId });
+
+    if (!answer) {
+      return res.status(404).json({ message: "Answer not found" });
+    }
+
+    answer.gainedDislikesNumber += 1;
+    await answer.save();
+
+    return res.status(200).json({ message: "Answer disliked", answer });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(500)
+      .json({ message: "Error occurred while disliking the answer" });
+  }
+};
+
 const DELETE_ANSWER_BY_ID = async (req, res) => {
   try {
     const response = await AnswerModel.findOne({
@@ -49,15 +93,15 @@ const DELETE_ANSWER_BY_ID = async (req, res) => {
       return res.status(404).json({ message: "Answer not found" });
     }
 
-    // if (response.questionId !== req.params.questionId) {
-    //   return res
-    //     .status(403)
-    //     .json({ message: "Yuo can only delete answer what belongs to You" });
-    // }
+    if (response.questionId !== req.params.questionId) {
+      return res
+        .status(403)
+        .json({ message: "Yuo can only delete answer what belongs to You" });
+    }
 
-    // if (!response) {
-    //   return res.status(404).json({ message: "Answer not found" });
-    // }
+    if (!response) {
+      return res.status(404).json({ message: "Answer not found" });
+    }
     await AnswerModel.deleteOne({ id: req.params.id });
     return res
       .status(200)
@@ -68,4 +112,10 @@ const DELETE_ANSWER_BY_ID = async (req, res) => {
   }
 };
 
-export { CREATE_ANSWER, GET_ANSWER, DELETE_ANSWER_BY_ID };
+export {
+  CREATE_ANSWER,
+  GET_ANSWER,
+  LIKE_ANSWER,
+  DISLIKE_ANSWER,
+  DELETE_ANSWER_BY_ID,
+};
