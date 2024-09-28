@@ -7,7 +7,6 @@ const CREATE_ANSWER = async (req, res) => {
       userName: req.body.userName,
       answerText: req.body.answerText,
       date: req.body.date || Date.now(),
-      gainedLikesNumber: req.body.gainedLikesNumber,
       questionId: req.params.id,
       userId: req.body.userId,
       id: uuidv4(),
@@ -49,7 +48,7 @@ const LIKE_ANSWER = async (req, res) => {
       return res.status(404).json({ message: "Answer not found" });
     }
 
-    answer.gainedLikesNumber += 1;
+    answer.gainedLikeNumber += 1;
     await answer.save();
 
     return res.status(200).json({ message: "Answer liked", answer });
@@ -71,15 +70,15 @@ const DISLIKE_ANSWER = async (req, res) => {
       return res.status(404).json({ message: "Answer not found" });
     }
 
-    answer.gainedDislikesNumber += 1;
+    answer.gainedDisLikeNumber += 1;
     await answer.save();
 
-    return res.status(200).json({ message: "Answer disliked", answer });
+    return res.status(200).json({ message: "Answer disLiked", answer });
   } catch (err) {
     console.log(err);
     return res
       .status(500)
-      .json({ message: "Error occurred while disliking the answer" });
+      .json({ message: "Error occurred while disLiking the answer" });
   }
 };
 
@@ -89,11 +88,7 @@ const DELETE_ANSWER_BY_ID = async (req, res) => {
       id: req.params.id,
     });
 
-    if (!response) {
-      return res.status(404).json({ message: "Answer not found" });
-    }
-
-    if (response.questionId !== req.params.questionId) {
+    if (response.userId !== req.body.userId) {
       return res
         .status(403)
         .json({ message: "Yuo can only delete answer what belongs to You" });

@@ -12,8 +12,8 @@ import auth from "../middleware/auth.js";
 const router = express.Router();
 router.post("/questions/:id/answers", auth, CREATE_ANSWER);
 router.get("/questions/:id/answers", auth, GET_ANSWER);
-router.post("/questions/:id/answers/like", auth, LIKE_ANSWER);
-router.post("/questions/:id/answers/dislike", auth, DISLIKE_ANSWER);
+router.post("/questions/:id/answers/like", LIKE_ANSWER);
+router.post("/questions/:id/answers/dislike", DISLIKE_ANSWER);
 router.delete("/answers/:id", auth, DELETE_ANSWER_BY_ID);
 
 export default router;
